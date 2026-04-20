@@ -912,3 +912,74 @@ function setupMobileTapPlay() {
     if (!id) return;
   }, { passive: true });
 }
+
+
+
+const POPULAR_ARTISTS_2026 = [
+  {name:'Taylor Swift', tag:'Pop global'},
+  {name:'The Weeknd', tag:'Pop / R&B'},
+  {name:'Drake', tag:'Hip Hop'},
+  {name:'Bad Bunny', tag:'Latin'},
+  {name:'Billie Eilish', tag:'Pop alternativo'},
+  {name:'Dua Lipa', tag:'Pop'},
+  {name:'Travis Scott', tag:'Rap'},
+  {name:'Kendrick Lamar', tag:'Rap'},
+  {name:'SZA', tag:'R&B'},
+  {name:'Feid', tag:'Latin urbano'},
+  {name:'Karol G', tag:'Latin pop'},
+  {name:'Peso Pluma', tag:'Regional mexicano'},
+  {name:'Anitta', tag:'Brasil / Pop'},
+  {name:'Gusttavo Lima', tag:'Sertanejo'},
+  {name:'Jorge & Mateus', tag:'Sertanejo'},
+  {name:'Thiaguinho', tag:'Pagode'},
+  {name:'Grupo Menos É Mais', tag:'Pagode'},
+  {name:'Marília Mendonça', tag:'Sertanejo'},
+  {name:'MC Ryan SP', tag:'Funk'},
+  {name:'Matuê', tag:'Rap BR'},
+  {name:'Filipe Ret', tag:'Rap BR'},
+  {name:'Racionais MCs', tag:'Rap BR'},
+  {name:'LiSA', tag:'Anime / J-pop'},
+  {name:'YOASOBI', tag:'J-pop'},
+  {name:'Aimer', tag:'Anime'},
+  {name:'ONE OK ROCK', tag:'J-Rock'}
+];
+
+function renderPopularArtists() {
+  const wrap = document.getElementById('artistsPopularList');
+  if (!wrap) return;
+  wrap.innerHTML = POPULAR_ARTISTS_2026.map(a => `
+    <div class="artist-pop-card" data-artist="${a.name}">
+      <div class="artist-pop-avatar">${a.name.charAt(0)}</div>
+      <div class="artist-pop-name">${a.name}</div>
+      <div class="artist-pop-sub">${a.tag}</div>
+    </div>
+  `).join('');
+  wrap.querySelectorAll('.artist-pop-card').forEach(card => {
+    card.addEventListener('click', () => openArtist(card.dataset.artist));
+  });
+}
+
+
+let deferredInstallPrompt = null;
+
+function setupInstallPrompt() {
+  const btn = document.getElementById('installAppBtn');
+  if (!btn) return;
+
+  window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    deferredInstallPrompt = e;
+    btn.style.display = 'inline-flex';
+  });
+
+  btn.addEventListener('click', async () => {
+    if (!deferredInstallPrompt) {
+      toast('No celular, use “Adicionar à tela inicial” se o navegador não mostrar a instalação.');
+      return;
+    }
+    deferredInstallPrompt.prompt();
+    await deferredInstallPrompt.userChoice;
+    deferredInstallPrompt = null;
+    btn.style.display = 'none';
+  });
+}

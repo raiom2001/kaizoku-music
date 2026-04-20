@@ -905,3 +905,137 @@ kbd{background:var(--surface-2);border:1px solid var(--border);border-radius:4px
     border-radius:18px;
   }
 }
+
+
+
+.install-app-btn{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+  min-height:44px;
+  padding:10px 18px;
+  border:none;
+  border-radius:999px;
+  background:linear-gradient(135deg,#c9a84c,#e2463f);
+  color:#07070d;
+  font-weight:800;
+  font-size:12px;
+  box-shadow:0 10px 24px rgba(0,0,0,.25);
+}
+
+.mobile-install-wrap{
+  margin-bottom:14px;
+}
+
+.artist-pop-card{
+  background:linear-gradient(180deg,#17141f 0%,#0d0b14 100%);
+  border:1px solid rgba(201,168,76,.12);
+  border-radius:16px;
+  padding:16px 12px;
+  min-height:120px;
+  cursor:pointer;
+  transition:transform .22s ease,border-color .22s ease;
+}
+
+.artist-pop-card:hover{
+  transform:translateY(-3px);
+  border-color:rgba(201,168,76,.28);
+}
+
+.artist-pop-avatar{
+  width:48px;
+  height:48px;
+  border-radius:50%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  margin-bottom:10px;
+  font-family:'Cinzel',serif;
+  font-size:20px;
+  font-weight:700;
+  color:#f3d98c;
+  background:linear-gradient(135deg,rgba(201,168,76,.25),rgba(226,70,63,.18));
+  border:1px solid rgba(201,168,76,.18);
+}
+
+.artist-pop-name{
+  font-size:12px;
+  font-weight:700;
+  color:var(--text);
+  line-height:1.35;
+}
+
+.artist-pop-sub{
+  margin-top:4px;
+  font-size:10px;
+  color:var(--text-dim);
+}
+
+.mobile-player-sheet .lyrics-panel{
+  background:
+    radial-gradient(circle at top, rgba(201,168,76,.15), transparent 30%),
+    radial-gradient(circle at bottom right, rgba(226,70,63,.12), transparent 28%),
+    linear-gradient(180deg,#120f18 0%,#0b0910 60%,#050507 100%) !important;
+}
+
+.mobile-player-sheet .lyrics-body{
+  color:#f3ede4;
+}
+
+.mobile-player-sheet .btn-primary{
+  background:linear-gradient(135deg,#c9a84c,#e2463f) !important;
+  color:#07070d !important;
+}
+
+@media (max-width: 768px){
+  .topbar-mobile{
+    background:rgba(8,8,12,.94);
+    border-bottom:1px solid rgba(201,168,76,.10);
+  }
+
+  .main{
+    background:
+      radial-gradient(circle at top, rgba(201,168,76,.06), transparent 18%),
+      linear-gradient(180deg,#0d0a13 0%,#050507 100%);
+  }
+
+  .view-hero{
+    background:
+      radial-gradient(circle at top left, rgba(201,168,76,.14), transparent 24%),
+      radial-gradient(circle at bottom right, rgba(226,70,63,.10), transparent 24%),
+      linear-gradient(180deg,#181320 0%,#0a0910 100%);
+    border:1px solid rgba(201,168,76,.10);
+  }
+
+  .track-card,
+  .genre-card,
+  .artist-pop-card,
+  .track-row{
+    background:linear-gradient(180deg,#15131b 0%,#0b0a10 100%);
+    border:1px solid rgba(201,168,76,.09);
+  }
+
+  .card-play-btn{
+    background:linear-gradient(135deg,#c9a84c,#e2463f);
+    color:#07070d;
+  }
+
+  .bottom-nav{
+    background:rgba(6,6,9,.98);
+    border-top:1px solid rgba(201,168,76,.10);
+  }
+
+  .bottom-nav-btn.active{
+    color:#e8c96a;
+  }
+
+  .player{
+    background:linear-gradient(180deg,rgba(24,19,30,.98) 0%,rgba(10,9,14,.98) 100%);
+    border:1px solid rgba(201,168,76,.12);
+  }
+
+  .player-cover{
+    border:1px solid rgba(201,168,76,.12);
+  }
+}
