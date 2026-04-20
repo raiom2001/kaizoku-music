@@ -8,7 +8,7 @@ async function ytFetch(endpoint, params) {
   const p = new URLSearchParams(params);
   let url;
   if (API_BASE.startsWith('/api')) {
-    url = `${API_BASE}/youtube?endpoint=${endpoint}&${p}`;
+    url = `${API_BASE}?endpoint=${endpoint}&${p}`;
   } else {
     p.set('key', LOCAL_KEY);
     url = `${API_BASE}/${endpoint}?${p}`;
