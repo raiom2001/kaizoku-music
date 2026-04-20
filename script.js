@@ -868,3 +868,32 @@ document.addEventListener('DOMContentLoaded', () => {
   // load home
   loadHomeRandom();
 });
+
+
+function setupMobilePlayerExpand(){
+  if (window.innerWidth > 768) return;
+  const player = document.querySelector('.player');
+  if (!player) return;
+
+  player.addEventListener('click', (e) => {
+    if (e.target.closest('button') || e.target.closest('a') || e.target.closest('input')) return;
+    const modal = document.getElementById('lyricsModal');
+    const body = document.getElementById('lyricsBody');
+    if (!state.currentTrack) return;
+    document.getElementById('lyricsSongTitle').textContent = state.currentTrack.title;
+    document.getElementById('lyricsSongArtist').textContent = state.currentTrack.artist;
+    body.innerHTML = `
+      <div style="display:flex;flex-direction:column;align-items:center;text-align:center;gap:14px;padding:4px 4px 20px;">
+        <img src="${state.currentTrack.thumb || ''}" alt="" style="width:220px;height:220px;object-fit:cover;border-radius:18px;background:#222;">
+        <div style="font-size:18px;font-weight:700;color:#fff;">${state.currentTrack.title}</div>
+        <div style="font-size:13px;color:rgba(255,255,255,.7);">${state.currentTrack.artist}</div>
+        <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;">
+          <button onclick="document.getElementById('btnPrev').click()" class="btn-ghost">Anterior</button>
+          <button onclick="document.getElementById('btnPlay').click()" class="btn-primary">Play / Pause</button>
+          <button onclick="document.getElementById('btnNext').click()" class="btn-ghost">Próxima</button>
+        </div>
+      </div>
+    `;
+    modal.classList.add('open');
+  }, { passive:true });
+}
