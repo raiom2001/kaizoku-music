@@ -559,20 +559,19 @@ function itemToTrack(item) {
 }
 
 function trackCardHTML(t) {
-  const saved = state.playlist.some(p => p.id === t.id);
   return `<div class="track-card" data-id="${t.id}">
     <div class="card-cover-wrap">
       <img src="${t.thumb||''}" alt="" loading="lazy"/>
       <div class="card-play-overlay"><div class="card-play-btn"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></div></div>
-      ${t.duration ? `<div class="card-duration">${t.duration}</div>` : ''}
+      ${t.duration?`<div class="card-duration">${t.duration}</div>`:''}
     </div>
     <div class="card-body">
       <div class="card-title" title="${esc(t.title)}">${esc(t.title)}</div>
       <div class="card-artist-row">
-        <div class="card-artist">${esc(t.artist)}</div>
+        <div class="card-artist">${artistLinkHTML(t.artist)}</div>
         <div class="card-actions">
-          <button class="card-queue-btn" title="Adicionar à fila"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></button>
-          <button class="card-dl-btn" title="Download MP3"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></button>
+          <button class="card-queue-btn" title="Adicionar à fila"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">e x1="12" y1="5" x2="12" y2="19"/>e x1="5" y1="12" x2="19" y2="12"/></svg></button>
+          <button class="card-dl-btn" title="Download MP3"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/>e x1="12" y1="15" x2="12" y2="3"/></svg></button>
         </div>
       </div>
     </div>
@@ -981,5 +980,79 @@ function setupInstallPrompt() {
     await deferredInstallPrompt.userChoice;
     deferredInstallPrompt = null;
     btn.style.display = 'none';
+  });
+}
+
+
+function normalizeArtistName(name){
+  return String(name || '')
+    .replace(/\s*-\s*topic$/i,'')
+    .replace(/\s*official.*$/i,'')
+    .replace(/\s*vevo$/i,'')
+    .replace(/\s*\|.*$/i,'')
+    .trim();
+}
+
+function openArtistByName(name){
+  const clean = normalizeArtistName(name);
+  if (!clean) return;
+  openArtist(clean);
+}
+
+function artistLinkHTML(name){
+  const clean = normalizeArtistName(name);
+  return `<span class="artist-link" data-artist-link="${clean}">${clean}</span>`;
+}
+
+function bindArtistLinks(root=document){
+  root.querySelectorAll('[data-artist-link]').forEach(el=>{
+    if (el.dataset.artistBound === '1') return;
+    el.dataset.artistBound = '1';
+    el.addEventListener('click', (e)=>{
+      e.stopPropagation();
+      openArtistByName(el.dataset.artistLink);
+    });
+  });
+}
+
+
+function renderArtistSearchResults(query){
+  const wrap = document.getElementById('searchArtistResults');
+  if (!wrap) return;
+  const q = String(query || '').trim().toLowerCase();
+  if (!q || q.length < 2) {
+    wrap.innerHTML = '';
+    return;
+  }
+
+  const source = [...POPULAR_ARTISTS_2026, ...GENRES.flatMap(g => g.artists.map(a => ({name:a, tag:g.label})))];
+  const seen = new Set();
+  const matches = source.filter(a => {
+    const n = a.name.toLowerCase();
+    if (seen.has(a.name)) return false;
+    seen.add(a.name);
+    return n.includes(q);
+  }).slice(0,8);
+
+  if (!matches.length) {
+    wrap.innerHTML = '';
+    return;
+  }
+
+  wrap.innerHTML = `
+    <div class="detail-section-label">Artistas encontrados</div>
+    <div class="genres-list">
+      ${matches.map(a => `
+        <div class="artist-pop-card" data-artist="${a.name}">
+          <div class="artist-pop-avatar">${a.name.charAt(0)}</div>
+          <div class="artist-pop-name">${a.name}</div>
+          <div class="artist-pop-sub">${a.tag}</div>
+        </div>
+      `).join('')}
+    </div>
+  `;
+
+  wrap.querySelectorAll('.artist-pop-card').forEach(card=>{
+    card.addEventListener('click',()=>openArtist(card.dataset.artist));
   });
 }

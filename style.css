@@ -1039,3 +1039,32 @@ kbd{background:var(--surface-2);border:1px solid var(--border);border-radius:4px
     border:1px solid rgba(201,168,76,.12);
   }
 }
+
+
+
+.artist-link{
+  color:var(--text-muted);
+  text-decoration:none;
+  cursor:pointer;
+  transition:color .18s ease;
+}
+.artist-link:hover{
+  color:var(--gold-2);
+}
+.mobile-player-sheet .artist-link{
+  color:rgba(255,255,255,.72);
+}
+.mobile-player-sheet .artist-link:hover{
+  color:#f3d98c;
+}
+.mobile-now-actions{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:18px;
+  margin-top:4px;
+}
+.mobile-now-actions button{
+  border:none;
+  cursor:pointer;
+}
