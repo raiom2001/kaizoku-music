@@ -897,3 +897,18 @@ function setupMobilePlayerExpand(){
     modal.classList.add('open');
   }, { passive:true });
 }
+
+
+function setupMobileTapPlay() {
+  document.addEventListener('click', (e) => {
+    const card = e.target.closest('.track-card');
+    if (!card || window.innerWidth > 768) return;
+
+    const dl = e.target.closest('.card-dl-btn');
+    const q = e.target.closest('.card-queue-btn');
+    if (dl || q) return;
+
+    const id = card.dataset.id;
+    if (!id) return;
+  }, { passive: true });
+}
