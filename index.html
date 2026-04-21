@@ -11,6 +11,7 @@
   <title>Kaizoku Music</title>
   <link rel="manifest" href="manifest.json"/>
   <link rel="apple-touch-icon" href="assets/logo.png"/>
+  <link rel="icon" type="image/png" href="assets/logo.png"/>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
@@ -182,7 +183,7 @@
     <span class="queue-title">Fila de Reprodução</span>
     <button class="queue-close" id="queueToggle2"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
   </div>
-  <div class="queue-list" id="queueList"></div>
+  <div class="queue-list" id="queueListMain"></div>
 </div>
 
 <!-- Track screen (full player) -->
@@ -228,7 +229,7 @@
     <!-- Queue inside track screen -->
     <div class="ts-queue-section">
       <div class="ts-queue-title">A seguir</div>
-      <div class="ts-queue-list" id="queueList"></div>
+      <div class="ts-queue-list" id="queueListTs"></div>
     </div>
   </div>
 </div>

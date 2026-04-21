@@ -115,19 +115,22 @@ function openTrackScreen(track,queueRef,idx){
 function closeTrackScreen(){$('trackScreen').classList.remove('open');document.body.classList.remove('track-screen-open')}
 
 /* ── Queue panel ─────────────────────────────────────────── */
-function renderQueuePanel(){
-  const queueList=$('queueList');if(!queueList)return;
-  queueList.innerHTML='';
-  if(!queue.length){queueList.innerHTML='<div class="queue-empty">Nada na fila</div>';return}
+function buildQueueItems(container){
+  container.innerHTML='';
+  if(!queue.length){container.innerHTML='<div class="queue-empty">Nada na fila</div>';return}
   queue.forEach((t,i)=>{
     const div=document.createElement('div');
     div.className=`queue-item${i===currentIndex?' queue-active':''}`;
     div.innerHTML=`<img src="${t.thumb||''}" alt="${t.title}" onerror="this.style.visibility='hidden'"/><div class="queue-item-info"><div class="queue-item-title">${t.title}</div><div class="queue-item-artist">${t.artist||''}</div></div>${i===currentIndex?`<div class="queue-playing-dot"></div>`:''}`;
     div.addEventListener('click',()=>playTrack(t,queue,i));
-    queueList.appendChild(div);
+    container.appendChild(div);
   });
-  const activeEl=queueList.querySelector('.queue-active');
+  const activeEl=container.querySelector('.queue-active');
   if(activeEl)setTimeout(()=>activeEl.scrollIntoView({block:'center',behavior:'smooth'}),100);
+}
+function renderQueuePanel(){
+  const ql=$('queueListMain');if(ql)buildQueueItems(ql);
+  const qt=$('queueListTs');if(qt)buildQueueItems(qt);
 }
 
 /* ── Playback ────────────────────────────────────────────── */
@@ -165,31 +168,14 @@ function updateAllRows(){
   renderQueuePanel();
 }
 
-/* ── YouTube Data API (via proxy) ────────────────────────── */
-async function ytSearch(q,pageToken=''){
-  const params=new URLSearchParams({q,maxResults:MAX_RESULTS,...(pageToken?{pageToken}:{})});
-  const r=await fetch(`/api/search?${params}`);
-  if(!r.ok)throw new Error('API error '+r.status);
-  return r.json()
-}
-async function ytVideos(ids){
-  const params=new URLSearchParams({ids:ids.join(',')});
-  const r=await fetch(`/api/videos?${params}`);
-  if(!r.ok)throw new Error('API error '+r.status);
-  return r.json()
-}
-function parseItems(searchData,detailsMap){
-  return(searchData.items||[]).map(item=>{
-    const id=item.id.videoId,snip=item.snippet,det=detailsMap[id],durIso=det?.contentDetails?.duration||'';
-    return{id,title:snip.title.replace(/&amp;/g,'&').replace(/&quot;/g,'"').replace(/&#39;/g,"'"),artist:snip.channelTitle,thumb:snip.thumbnails?.high?.url||snip.thumbnails?.medium?.url||snip.thumbnails?.default?.url,duration:fmtDuration(durIso)}
-  })
-}
+/* ── Search API (proxy handles Piped + YouTube fallback) ─── */
 async function search(q,pageToken=''){
-  const data=await ytSearch(q,pageToken);
-  const ids=(data.items||[]).map(i=>i.id.videoId).filter(Boolean);
-  let detailsMap={};
-  if(ids.length){const det=await ytVideos(ids);(det.items||[]).forEach(v=>{detailsMap[v.id]=v})}
-  return{tracks:parseItems(data,detailsMap),nextPageToken:data.nextPageToken||''}
+  const params=new URLSearchParams({q,...(pageToken?{pageToken}:{})});
+  const r=await fetch(`/api/search?${params}`);
+  if(!r.ok){const e=await r.json().catch(()=>({}));throw new Error(e.error||'Erro '+r.status)}
+  const data=await r.json();
+  if(data.error&&!data.tracks?.length)throw new Error(data.error);
+  return{tracks:data.tracks||[],nextPageToken:data.nextPageToken||''}
 }
 
 /* ── Navigation / Search ─────────────────────────────────── */
@@ -340,8 +326,9 @@ document.addEventListener('keydown',e=>{
 });
 
 /* ── Queue panel toggle ──────────────────────────────────── */
-const queueToggle=$('queueToggle');
-if(queueToggle)queueToggle.addEventListener('click',()=>{const qp=$('queuePanel');if(qp)qp.classList.toggle('open');renderQueuePanel()});
+function toggleQueuePanel(){const qp=$('queuePanel');if(qp)qp.classList.toggle('open');renderQueuePanel()}
+const queueToggle=$('queueToggle');if(queueToggle)queueToggle.addEventListener('click',toggleQueuePanel);
+const queueToggle2=$('queueToggle2');if(queueToggle2)queueToggle2.addEventListener('click',toggleQueuePanel);
 
 /* ── Init ────────────────────────────────────────────────── */
 setVolBar(80);
